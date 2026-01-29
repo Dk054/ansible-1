@@ -1,9 +1,24 @@
 ---
-  el:
-    hosts:
-      centos7:
-        ansible_connection: docker
-  deb:
-    hosts:
-      ubuntu:
-        ansible_connection: docker
+yandex:
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no' #отключает проверку SSH-отпечатка хоста при подключении.
+  hosts:
+    VM1:                       # Первое имя хоста
+      ansible_host: 89.169.149.50
+      ansible_user: ubuntu
+      ansible_ssh_private_key_file: ~/.ssh/id_rsa
+    VM2:                       # Второе имя хоста
+      ansible_host: 89.169.137.127
+      ansible_user: ubuntu
+      ansible_ssh_private_key_file: ~/.ssh/id_rsa
+
+el:
+  hosts:
+    centos7:
+      ansible_connection: local
+      ansible_host: localhost
+deb:
+  hosts:
+    ubuntu:
+      ansible_connection: local
+      ansible_host: localhost
