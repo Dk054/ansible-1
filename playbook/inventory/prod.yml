@@ -22,3 +22,7 @@ deb:
     ubuntu:
       ansible_connection: local
       ansible_host: localhost
+local:
+  hosts:
+    localhost:
+      ansible_connection: local  # ← плагин подключения для control node

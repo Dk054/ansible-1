@@ -74,10 +74,53 @@ ok: [ubuntu] => {
 }
 ```
 7. При помощи `ansible-vault` зашифруйте факты в `group_vars/deb` и `group_vars/el` с паролем `netology`.
+```
+- Зашифровать файл для групп
+ansible-vault encrypt group_vars/deb/examp.yml
+ansible-vault encrypt group_vars/el/examp.yml
+```
 8. Запустите playbook на окружении `prod.yml`. При запуске `ansible` должен запросить у вас пароль. Убедитесь в работоспособности.
+```
+-флаг --ask-vault-pass
+ansible-playbook -i inventory/prod.yml site.yml --ask-vault-pass
+```
 9. Посмотрите при помощи `ansible-doc` список плагинов для подключения. Выберите подходящий для работы на `control node`.
+```
+ansible-doc -t connection -l
+после изучения пришел к выводу
+для группы yandex:
+# Ansible автоматически использует SSH, так как указаны:
+# - ansible_host (IP адрес)
+# - ansible_user
+# - ansible_ssh_private_key_file
+ Для групп el и deb - local 
+ Для новой группы   - local
+```
 10. В `prod.yml` добавьте новую группу хостов с именем  `local`, в ней разместите localhost с необходимым типом подключения.
 11. Запустите playbook на окружении `prod.yml`. При запуске `ansible` должен запросить у вас пароль. Убедитесь, что факты `some_fact` для каждого из хостов определены из верных `group_vars`.
+- ansible-playbook -i inventory/prod.yml site.yml --ask-vault-pass
+``` КАРТА ВЫБОРА ДЛЯ ВСЕХ ХОСТОВ
+
+Хост	Принадлежит группам	Ищет в директориях	        Находит файл	    Значение some_fact
+VM1	        yandex, all    	1. group_vars/yandex/
+                            2. group_vars/all/	     group_vars/all/examp.yml	"all default fact"
+-----------------------------------------------------------------------------------------------------
+VM2	         yandex, all	1. group_vars/yandex/
+                            2. group_vars/all/	      group_vars/all/examp.yml	"all default fact"
+-----------------------------------------------------------------------------------------------------
+centos7	     el, all	    1. group_vars/el/
+                            2. group_vars/all/	      group_vars/el/examp.yml	"el default fact"
+-----------------------------------------------------------------------------------------------------
+ubuntu	     deb, all	    1. group_vars/deb/
+                            2. group_vars/all/	      group_vars/deb/examp.yml	"deb default fact"
+-----------------------------------------------------------------------------------------------------
+localhost	local, all	    1. group_vars/local/
+                            2. group_vars/all/	      group_vars/all/examp.yml	"all default fact"
+-----------------------------------------------------------------------------------------------------
+
+
+```
+
 12. Заполните `README.md` ответами на вопросы. Сделайте `git push` в ветку `master`. В ответе отправьте ссылку на ваш открытый репозиторий с изменённым `playbook` и заполненным `README.md`.
 13. Предоставьте скриншоты результатов запуска команд.
 
